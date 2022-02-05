@@ -126,8 +126,6 @@ def read_package(workout_type: str, data: list) -> Training:
     if workout_type in progress:
         result = progress[workout_type](*data)
         return result
-    
-
 
 def main(training: Training) -> str:
     """Главная функция."""
