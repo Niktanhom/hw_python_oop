@@ -43,13 +43,11 @@ class Training:
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
-        real_distance = self.action * self.LEN_STEP / self.M_IN_KM
-        return real_distance
+        return self.action * self.LEN_STEP / self.M_IN_KM
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        mean_speed = self.get_distance() / self.duration
-        return mean_speed
+        return self.get_distance() / self.duration
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -59,11 +57,11 @@ class Training:
         """Вернуть информационное сообщение о выполненной тренировке."""
 
         return InfoMessage(
-            self.__class__.__name__,
-            self.duration,
-            self.get_distance(),
-            self.get_mean_speed(),
-            self.get_spent_calories(),
+            training_type=self.__class__.__name__,
+            duration=self.duration,
+            distance=self.get_distance(),
+            speed=self.get_mean_speed(),
+            calories=self.get_spent_calories(),
         )
 
 
@@ -133,13 +131,19 @@ class Swimming(Training):
         return calories
 
 
+PROGRESS: dict = {
+    "RUN": Running,
+    "WLK": SportsWalking,
+    "SWM": Swimming,
+}
+
+
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
 
-    progress: dict = {"RUN": Running, "WLK": SportsWalking, "SWM": Swimming}
-    if workout_type in progress:
-        result = progress[workout_type](*data)
-        return result
+    if workout_type not in PROGRESS:
+        raise NotImplementedError("Ошибка типа тренировки")
+    return PROGRESS[workout_type](*data)
 
 
 def main(training: Training) -> str:
